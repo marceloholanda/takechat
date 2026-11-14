@@ -33,11 +33,13 @@ DATABASE_URL='postgresql://…?sslmode=require&schema=takechat' npm run db:migra
 
 Use the database connection details shown in the Supabase dashboard. Do not commit the URL or send its password in chat. The Prisma migrations create TakeChat tables in `takechat` only.
 
-## 2. Create Hyperdrive
+## 2. Connect Hyperdrive
 
-Create a Cloudflare Hyperdrive configuration pointing to the Supabase Postgres connection string. Use Supabase's session pooler connection details if the direct database hostname is not reachable from your network. Hyperdrive must connect to the same database used for migrations.
+The Cloudflare `takechat-supabase` Hyperdrive configuration is already created for the isolated TakeChat database, and its ID is set in `wrangler.jsonc`. Its origin points to the Supabase direct host `db.ibtnanxzzgniujnpscbn.supabase.co`, database `postgres`, port 5432. Keep this binding when deploying; if you recreate it, update `hyperdrive[0].id`.
 
-Copy the Hyperdrive configuration ID into `wrangler.jsonc` under `hyperdrive[0].id`. The checked-in value is a placeholder and must be replaced before deploying.
+Use Supabase's direct PostgreSQL connection as the Hyperdrive origin. Do not point Hyperdrive at the Supabase session pooler: Hyperdrive provides its own connection pool. The connection used for `npm run db:migrate` must reach the same Supabase project and specify `schema=takechat`.
+
+The two Cloudflare Queues listed above already exist. Wrangler attaches the queue producer, consumer, and cron triggers when the Worker is deployed.
 
 ## 3. Add Worker secrets
 

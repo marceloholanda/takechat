@@ -3,7 +3,10 @@
   "name": "takechat",
   "main": "cloudflare/worker.ts",
   "compatibility_date": "2026-11-14",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
   "workers_dev": true,
   "assets": {
     "directory": ".open-next/assets",
@@ -47,6 +50,11 @@
     ]
   },
   "triggers": {
-    "crons": ["* * * * *", "*/5 * * * *", "0 */6 * * *", "0 9 * * *"]
+    "crons": [
+      "* * * * *",
+      "*/5 * * * *",
+      "0 */6 * * *",
+      "0 9 * * *"
+    ]
   }
 }
