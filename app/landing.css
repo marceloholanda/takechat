@@ -104,6 +104,34 @@
 .or-nav-signin:hover {
   color: var(--or-ink);
 }
+.or-language-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.or-language-select {
+  min-height: 36px;
+  width: 52px;
+  border: 1px solid var(--or-line);
+  border-radius: 8px;
+  background: var(--or-paper);
+  color: var(--or-ink);
+  padding: 0 6px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+.or-language-select:disabled {
+  opacity: 0.6;
+}
+.or-language-error {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: max-content;
+  color: #b42318;
+  font-size: 11px;
+}
 @media (max-width: 1000px) {
   .or-nav-signin {
     display: none;
@@ -689,7 +717,13 @@
     min-height: 72px;
     gap: 12px;
   }
+  .or-nav-cta {
+    gap: 8px;
+  }
   .or-nav nav a:not(.or-stars) {
+    display: none;
+  }
+  .or-nav nav .or-stars {
     display: none;
   }
   .or-wordmark {
