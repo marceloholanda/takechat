@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/client";
-import type { Workspace, WorkspaceRole } from "@/app/generated/prisma/client";
+import type { Workspace, WorkspaceRole } from "@prisma/client";
 
 function normalizeInviteEmail(email: string) {
   return email.trim().toLowerCase();

@@ -1,5 +1,5 @@
 -- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
+CREATE SCHEMA IF NOT EXISTS "takechat";
 
 -- CreateEnum
 CREATE TYPE "WorkspaceRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');

@@ -1,29 +1,21 @@
 # Contributing
 
-Thanks for wanting to help. OpenReply is public so the comment-to-DM engine is something you can read, run yourself, and improve.
+Thanks for wanting to help improve TakeChat's Instagram comment reply workflow.
 
 ## Ways to help
 
 - Fix a bug. The DM worker and the webhook parser are the parts that matter most.
-- Improve the docs. If you hit a Meta setup quirk that is not written down, adding it to `docs/setup.md` is as valuable as a code fix. That guide is where people lose the most time.
+- Improve the docs. Add setup changes to `docs/takechat-deploy-cloudflare.md`.
 - Add campaign templates in `lib/templates/`.
 - Add tests. The suite runs with `npm test`.
 
 ## Development setup
 
 ```bash
-npm install
-docker-compose up -d
-cp .env.example .env      # fill in the values, see docs/setup.md
+npm ci
+cp .env.example .env      # fill in the values, see docs/takechat-deploy-cloudflare.md
 npm run db:generate
-npm run db:migrate
 npm run dev
-```
-
-Run the worker in a second terminal, since it is what sends the DMs:
-
-```bash
-npm run worker
 ```
 
 ## Before you open a pull request
@@ -41,7 +33,7 @@ If a check cannot run in your environment, say why in the pull request body. A s
 
 ## A note on the codebase
 
-This is Next.js 16, and some conventions differ from older versions. There are dev notes in `AGENTS.md`. When you are unsure about an API, read the relevant guide in `node_modules/next/dist/docs/` before writing against it.
+This is Next.js hosted on Cloudflare Workers. Production queue delivery uses Cloudflare Queues; local development does not start a separate worker process.
 
 ## Campaign templates
 

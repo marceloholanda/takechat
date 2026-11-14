@@ -1,12 +1,12 @@
 // ManyChat Alternative — B2B Instagram Comment → DM SaaS schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["takechat"]
 }
 
 model User {
@@ -23,6 +23,8 @@ model User {
   ownedWorkspaces   Workspace[]       @relation("WorkspaceOwner")
   workspaceMembers  WorkspaceMember[]
   sentInvitations   WorkspaceInvitation[] @relation("WorkspaceInvitationsSent")
+
+  @@schema("takechat")
 }
 
 model Account {
@@ -43,6 +45,8 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+
+  @@schema("takechat")
 }
 
 model Session {
@@ -54,6 +58,8 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+
+  @@schema("takechat")
 }
 
 model VerificationToken {
@@ -62,6 +68,8 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+
+  @@schema("takechat")
 }
 
 model Workspace {
@@ -88,6 +96,8 @@ model Workspace {
   serviceKeys       ServiceKey[]
 
   @@index([ownerId])
+
+  @@schema("takechat")
 }
 
 model WorkspaceMember {
@@ -102,6 +112,8 @@ model WorkspaceMember {
 
   @@unique([workspaceId, userId])
   @@index([userId])
+
+  @@schema("takechat")
 }
 
 model ServiceKey {
@@ -117,6 +129,8 @@ model ServiceKey {
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
+
+  @@schema("takechat")
 }
 
 model WorkspaceInvitation {
@@ -139,6 +153,8 @@ model WorkspaceInvitation {
   @@index([email])
   @@index([workspaceId])
   @@index([status])
+
+  @@schema("takechat")
 }
 
 model InstagramAccount {
@@ -162,6 +178,8 @@ model InstagramAccount {
   followerSnapshots FollowerSnapshot[]
 
   @@index([workspaceId])
+
+  @@schema("takechat")
 }
 
 /// Daily follower total for one account. Instagram only retains ~30 days of
@@ -182,6 +200,8 @@ model FollowerSnapshot {
 
   @@unique([instagramAccountId, date])
   @@index([instagramAccountId, date])
+
+  @@schema("takechat")
 }
 
 model Automation {
@@ -234,6 +254,8 @@ model Automation {
   @@index([workspaceId])
   @@index([instagramAccountId])
   @@index([postId])
+
+  @@schema("takechat")
 }
 
 model DmLog {
@@ -272,6 +294,8 @@ model DmLog {
   @@index([automationId])
   @@index([instagramAccountId])
   @@index([status])
+
+  @@schema("takechat")
 }
 
 // Legacy reconciliation model; currently unwired. Runtime code does not read
@@ -285,6 +309,8 @@ model ProcessedComment {
   seenAt             DateTime @default(now())
 
   @@index([instagramAccountId])
+
+  @@schema("takechat")
 }
 
 model TrackedLink {
@@ -308,6 +334,8 @@ model TrackedLink {
 
   @@index([workspaceId])
   @@index([automationId])
+
+  @@schema("takechat")
 }
 
 model LinkClick {
@@ -335,6 +363,8 @@ model LinkClick {
   @@index([trackedLinkId])
   @@index([createdAt])
   @@index([workspaceId, createdAt])
+
+  @@schema("takechat")
 }
 
 model WebhookEvent {
@@ -351,6 +381,8 @@ model WebhookEvent {
 
   @@index([workspaceId])
   @@index([status])
+
+  @@schema("takechat")
 }
 
 model OperationalEvent {
@@ -369,12 +401,16 @@ model OperationalEvent {
   @@index([source])
   @@index([level])
   @@index([createdAt])
+
+  @@schema("takechat")
 }
 
 enum WorkspaceRole {
   OWNER
   ADMIN
   MEMBER
+
+  @@schema("takechat")
 }
 
 enum WorkspaceInvitationStatus {
@@ -382,6 +418,8 @@ enum WorkspaceInvitationStatus {
   ACCEPTED
   REVOKED
   EXPIRED
+
+  @@schema("takechat")
 }
 
 enum DmStatus {
@@ -392,12 +430,16 @@ enum DmStatus {
   SKIPPED_RATE_LIMIT
   SKIPPED_PLAN_LIMIT
   SKIPPED_NO_MATCH
+
+  @@schema("takechat")
 }
 
 enum WebhookStatus {
   PENDING
   PROCESSED
   FAILED
+
+  @@schema("takechat")
 }
 
 enum OperationalEventSource {
@@ -405,18 +447,24 @@ enum OperationalEventSource {
   TOKEN_REFRESH
   HEALTH
   SYSTEM
+
+  @@schema("takechat")
 }
 
 enum OperationalEventLevel {
   INFO
   WARNING
   ERROR
+
+  @@schema("takechat")
 }
 
 
 enum InstagramProvider {
   META
   ZERNIO
+
+  @@schema("takechat")
 }
 
 model ZernioConnection {
@@ -428,10 +476,68 @@ model ZernioConnection {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@schema("takechat")
 }
 
-// Claims persist independently of BullMQ retention so old taps never resend.
+// Claims persist independently of Cloudflare Queue retention so old taps never resend.
 model PostbackDelivery {
   id String @id
   createdAt DateTime @default(now())
+
+  @@schema("takechat")
+}
+
+model QueueJob {
+  id             String         @id
+  name           String
+  data           Json
+  status         QueueJobStatus @default(PENDING)
+  attempts       Int            @default(0)
+  runAt          DateTime       @default(now())
+  leaseExpiresAt DateTime?
+  lastError      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  completedAt    DateTime?
+
+  @@index([status, runAt])
+  @@index([status, leaseExpiresAt])
+
+  @@schema("takechat")
+}
+
+model RateLimitBucket {
+  key       String   @id
+  count     Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expiresAt])
+
+  @@schema("takechat")
+}
+
+model WorkerHeartbeat {
+  id        String   @id
+  status    String
+  worker    String
+  pid       Int      @default(0)
+  hostname  String?
+  startedAt DateTime?
+  checkedAt DateTime @updatedAt
+
+  @@schema("takechat")
+}
+
+enum QueueJobStatus {
+  PENDING
+  SCHEDULED
+  ENQUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+
+  @@schema("takechat")
 }

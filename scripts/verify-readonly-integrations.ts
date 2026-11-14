@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { hashServiceToken, newServiceToken } from "../lib/integrations/auth";
 
 const base = process.env.TEST_BASE_URL;

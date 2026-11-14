@@ -1,6 +1,6 @@
 # Security policy
 
-OpenReply handles Instagram access tokens, webhook payloads, and campaign data. Please report security issues responsibly.
+TakeChat handles Instagram access tokens, webhook payloads, and campaign data. Please report security issues responsibly.
 
 ## Supported versions
 
@@ -8,7 +8,7 @@ The active branch is `main`. Security fixes target `main` unless a maintainer as
 
 ## Reporting a vulnerability
 
-Do not open a public GitHub issue for a vulnerability. Send a private report to the repository owner through GitHub, or email the address on the maintainer's GitHub profile.
+Do not open a public GitHub issue for a vulnerability. Send a private report to the repository owner through GitHub, or email marceloholcomercial@gmail.com.
 
 Include a description, steps to reproduce, the impact, whether tokens or user data may be exposed, and a suggested fix if you have one.
 
@@ -29,9 +29,9 @@ The parts most worth scrutiny:
 
 Never commit any of these, and rotate one if it is exposed anywhere it could be logged:
 
-- `DATABASE_URL`, `REDIS_URL`
+- `DATABASE_URL`, Hyperdrive credentials
 - `NEXTAUTH_SECRET`, `CRON_SECRET`, `ENCRYPTION_KEY`
-- `RESEND_API_KEY`
+- `RESEND_API_KEY`, `EMAIL_SERVER`
 - `INSTAGRAM_APP_SECRET`, `FACEBOOK_APP_SECRET`
 - Live webhook payloads that contain user data
 

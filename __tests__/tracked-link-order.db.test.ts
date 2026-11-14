@@ -20,7 +20,7 @@ import { Client } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { NextRequest } from "next/server";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const DATABASE_URL = process.env.TEST_DATABASE_URL;
 const MIGRATIONS_DIR = path.join(__dirname, "..", "prisma", "migrations");
@@ -31,7 +31,7 @@ const SECOND = "https://example.com/second";
 const THIRD = "https://example.com/third";
 
 const state = vi.hoisted(() => ({
-  db: undefined as unknown as import("../app/generated/prisma/client").PrismaClient,
+  db: undefined as unknown as import("@prisma/client").PrismaClient,
   workspaceId: "",
 }));
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { Prisma } from "../app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 import {
   buildInitialCampaignLinks,
   syncCampaignLinks,

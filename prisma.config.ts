@@ -9,6 +9,13 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: withTakeChatSchema(process.env["DATABASE_URL"]),
   },
 });
+
+function withTakeChatSchema(value: string | undefined) {
+  if (!value) return value;
+  const url = new URL(value);
+  if (!url.searchParams.has("schema")) url.searchParams.set("schema", "takechat");
+  return url.toString();
+}

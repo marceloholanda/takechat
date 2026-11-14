@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentWorkspaceId } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
-import { DmStatus } from "@/app/generated/prisma/client";
+import { DmStatus } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   const workspaceId = await getCurrentWorkspaceId();

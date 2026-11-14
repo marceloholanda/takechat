@@ -2,7 +2,7 @@ import ptBRCatalog from "./pt-BR.json";
 import ruCatalog from "./ru.json";
 import zhTW from "./zh-TW.json";
 
-export const LOCALE_COOKIE = "openreply-locale";
+export const LOCALE_COOKIE = "takechat-locale";
 export type Locale = "en" | "zh-TW" | "pt-BR" | "ru";
 export type MessageKey = keyof typeof zhTW;
 

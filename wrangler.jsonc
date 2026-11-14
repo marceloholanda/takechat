@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "takechat",
+  "main": "cloudflare/worker.ts",
+  "compatibility_date": "2026-11-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  },
+  "vars": {
+    "NEXTAUTH_URL": "https://takechat.marceloholcomercial.workers.dev",
+    "INSTAGRAM_APP_ID": "2162666984639710",
+    "META_GRAPH_API_VERSION": "v25.0",
+    "ALLOWED_EMAILS": "marceloholcomercial@gmail.com"
+  },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "00000000000000000000000000000000"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "TAKECHAT_DM_QUEUE",
+        "queue": "takechat-dm-queue-production"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "takechat-dm-queue-production",
+        "dead_letter_queue": "takechat-dm-dlq-production",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 3,
+        "retry_delay": 30,
+        "max_concurrency": 5
+      }
+    ]
+  },
+  "triggers": {
+    "crons": ["* * * * *", "*/5 * * * *", "0 */6 * * *", "0 9 * * *"]
+  }
+}

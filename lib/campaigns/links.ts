@@ -1,4 +1,4 @@
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 import { TRACKED_LINK_ORDER } from "@/lib/tracking/link-order";
 import { generateTrackedLinkSlug } from "@/lib/tracking/server";
 

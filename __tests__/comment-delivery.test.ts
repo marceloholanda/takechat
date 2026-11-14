@@ -4,10 +4,10 @@ import path from "node:path";
 import { Client } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const state = vi.hoisted(() => ({
-  db: undefined as unknown as import("../app/generated/prisma/client").PrismaClient,
+  db: undefined as unknown as import("@prisma/client").PrismaClient,
 }));
 vi.mock("@/lib/db/client", () => ({
   get prisma() {

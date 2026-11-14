@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
 import "./landing.css";
 import Link from "next/link";
-import Image from "next/image";
 import localFont from "next/font/local";
 import { DemoNotice } from "@/components/demo-notice";
-import { zernioLink } from "@/lib/zernio-links";
 
 const geist = localFont({
   src: "../public/fonts/geist-latin.woff2",
   display: "swap",
   weight: "100 900",
 });
-const GITHUB_URL = "https://github.com/diwenne/openreply";
-const SUPPORT_URL = "https://buymeacoffee.com/diwen";
-const SETUP_DOCS_URL = `${GITHUB_URL}/blob/main/docs/setup.md`;
-const ZERNIO_DOCS_URL = `${GITHUB_URL}/blob/main/docs/zernio.md`;
+const GITHUB_URL = "https://github.com/marceloholanda/takechat";
+const CONTACT_URL = "mailto:marceloholcomercial@gmail.com";
+const SETUP_DOCS_URL = `${GITHUB_URL}/blob/main/docs/takechat-deploy-cloudflare.md`;
 
 function formatStars(count: number): string {
   if (count >= 1000) {
@@ -28,7 +25,7 @@ const githubIconPath =
 
 async function getGitHubStars(): Promise<number | null> {
   try {
-    const res = await fetch("https://api.github.com/repos/diwenne/openreply", {
+    const res = await fetch("https://api.github.com/repos/marceloholanda/takechat", {
       headers: { Accept: "application/vnd.github+json" },
       next: { revalidate: 3600 },
     });
@@ -43,30 +40,10 @@ async function getGitHubStars(): Promise<number | null> {
 }
 
 export const metadata: Metadata = {
-  title: "OpenReply - Open source Instagram comment-to-DM automation",
+  title: "TakeChat — Instagram comment replies",
   description:
-    "A free, self-hosted ManyChat alternative. Turn Instagram keyword comments into automatic private replies. Connect through your own Meta app or optional paid provider Zernio.",
+    "Configure automatic replies to comments on Instagram posts with Meta's official API.",
 };
-
-function SponsorCredit({ placement }: { placement: string }) {
-  return (
-    <a
-      className="or-sponsor-credit"
-      href={zernioLink({ placement })}
-      target="_blank"
-      rel="sponsored noopener noreferrer"
-    >
-      <span>Supported by</span>
-      <Image
-        src="/brand/zernio-primary.svg"
-        alt="Zernio"
-        width={76}
-        height={24}
-      />
-      <span className="or-sponsor-disclosure">Optional paid provider</span>
-    </a>
-  );
-}
 
 function ReplyPreview() {
   return (
@@ -76,7 +53,7 @@ function ReplyPreview() {
     >
       <div className="or-preview-top">
         <span className="or-wordmark">
-          OpenReply<span aria-hidden="true">↗</span>
+          TakeChat<span aria-hidden="true">↗</span>
         </span>
         <span className="or-mono">Campaign preview</span>
       </div>
@@ -141,15 +118,15 @@ function ReplyPreview() {
 const steps = [
   [
     "Connect your account",
-    "Choose Zernio or your own Meta app, then connect an Instagram Business or Creator account.",
+    "Sign in through the TakeChat Meta app and connect an Instagram Business or Creator account.",
   ],
   [
     "Set up a campaign",
     "Pick a post or reel, add keywords, and write the private reply. Add a public reply or tracked link buttons if you need them.",
   ],
   [
-    "OpenReply handles the rest",
-    "Incoming events trigger your campaigns. A background worker queues, rate-limits, and logs each send, with retries and comment reconciliation.",
+    "TakeChat handles the rest",
+    "Incoming events trigger your campaigns. A Cloudflare Worker queues, rate-limits, and logs each send, with retries and comment reconciliation.",
   ],
 ];
 const features = [
@@ -163,7 +140,7 @@ const features = [
   ],
   [
     "Inbox",
-    "Read conversations and reply from OpenReply, within Instagram’s messaging window.",
+    "Read conversations and reply from TakeChat, within Instagram’s messaging window.",
   ],
   [
     "Delivery logs",
@@ -181,21 +158,21 @@ export default async function Home() {
       <DemoNotice variant="banner" />
       <header className="or-header">
         <div className="or-container or-nav">
-          <a className="or-wordmark" href="#top" aria-label="OpenReply home">
-            OpenReply
+          <a className="or-wordmark" href="#top" aria-label="TakeChat home">
+            TakeChat
           </a>
           <nav aria-label="Main navigation">
             <a href="#how">How it works</a>
             <a href="#setup">Self-host it</a>
-            <a href={SUPPORT_URL} target="_blank" rel="noreferrer">
-              Buy me a coffee
+            <a href={CONTACT_URL}>
+              Contact
             </a>
             <a
               className="or-stars"
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
-              aria-label="View OpenReply on GitHub"
+              aria-label="View TakeChat on GitHub"
             >
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <path d={githubIconPath} />
@@ -222,12 +199,12 @@ export default async function Home() {
               into private replies.
             </h1>
             <p className="or-lead">
-              Someone comments a keyword on your post or reel, OpenReply sends
+              Someone comments a keyword on your post or reel, TakeChat sends
               them a DM automatically. Free, open source, self-hosted.
             </p>
             <div className="or-actions">
               <a className="or-button or-button-primary" href={SETUP_DOCS_URL}>
-                Set up OpenReply <span aria-hidden="true">↗</span>
+                Set up TakeChat <span aria-hidden="true">↗</span>
               </a>
               <a className="or-text-link" href="#how">
                 See how it works <span aria-hidden="true">↓</span>
@@ -236,7 +213,6 @@ export default async function Home() {
             <p className="or-hero-note">
               Free software. Self-hosted. Your infrastructure.
             </p>
-            <SponsorCredit placement="landing-hero" />
           </div>
           <ReplyPreview />
         </section>
@@ -289,9 +265,9 @@ export default async function Home() {
                   <br />A system you can inspect.
                 </h2>
                 <p>
-                  OpenReply owns the campaigns, keyword matching, queues,
-                  retries, logs, and inbox. Your connection provider handles the
-                  Instagram API.
+                  TakeChat manages campaigns, keyword matching, Cloudflare
+                  Queues, retries, logs, and the inbox. Instagram connections
+                  and replies use Meta’s official API.
                 </p>
                 <a href={GITHUB_URL} className="or-text-link">
                   Explore the source <span aria-hidden="true">↗</span>
@@ -305,81 +281,44 @@ export default async function Home() {
                 </div>
                 <div>
                   <span className="or-mono">Background worker</span>
-                  <strong>Node.js + BullMQ</strong>
+                  <strong>Cloudflare Workers + Queues</strong>
                   <span>Queued delivery & reconciliation</span>
                 </div>
                 <div>
                   <span className="or-mono">Your data</span>
-                  <strong>PostgreSQL + Redis</strong>
+                  <strong>Supabase Postgres + Cloudflare Queues</strong>
                   <span>Campaigns, accounts, logs & queue</span>
                 </div>
               </div>
             </section>
             <section id="setup" className="or-section">
               <div className="or-section-intro">
-                <h2>Self-host OpenReply. Choose your connection.</h2>
+                <h2>TakeChat runs on Cloudflare and Supabase.</h2>
                 <p>
-                  Both options need your own web app, background worker,
-                  PostgreSQL, and Redis. OpenReply is free software; hosting and
-                  provider costs are separate.
+                  Connect your Instagram professional account through the
+                  separate TakeChat Meta app. Cloudflare Workers runs the app
+                  and queue; Supabase stores campaigns, accounts, and logs.
                 </p>
               </div>
               <div className="or-provider-grid">
-                <article className="or-provider-zernio">
-                  <div className="or-provider-title">
-                    <h3>Connect with Zernio</h3>
-                    <span>Recommended for simpler setup</span>
-                  </div>
-                  <p>
-                    Use Zernio’s managed Instagram connection instead of
-                    creating and reviewing your own Meta app. Save an API key in
-                    Settings, choose a profile, and connect your account.
-                  </p>
-                  <ul>
-                    <li>No Meta app secrets to configure in OpenReply</li>
-                    <li>OpenReply registers the webhook for you</li>
-                    <li>Optional paid service and project sponsor</li>
-                  </ul>
-                  <a
-                    className="or-text-link"
-                    href={zernioLink({ placement: "landing-setup" })}
-                    rel="sponsored noopener noreferrer"
-                    target="_blank"
-                  >
-                    Explore Zernio <span aria-hidden="true">↗</span>
-                  </a>
-                  <a className="or-provider-guide" href={ZERNIO_DOCS_URL}>
-                    Read setup & feature limits
-                  </a>
-                </article>
                 <article>
                   <div className="or-provider-title">
-                    <h3>Use your own Meta app</h3>
-                    <span>Direct connection</span>
+                    <h3>Connect through Meta</h3>
+                    <span>Official Instagram API</span>
                   </div>
                   <p>
-                    Keep the existing direct Meta integration. Create your app,
-                    configure Instagram Login and webhooks, and manage platform
-                    credentials yourself.
+                    Sign in with the Instagram account added as a tester to the
+                    TakeChat app, then choose the professional profile whose
+                    comments TakeChat should handle.
                   </p>
-                  <ul>
-                    <li>Bring your own Meta app and secrets</li>
-                    <li>Handle App Review where required</li>
-                    <li>No Zernio account or subscription needed</li>
-                  </ul>
-                  <a
-                    className="or-text-link"
-                    href={`${SETUP_DOCS_URL}#the-meta-app`}
-                  >
-                    Follow the direct Meta guide{" "}
-                    <span aria-hidden="true">↗</span>
+                  <a className="or-text-link" href={SETUP_DOCS_URL}>
+                    Deployment and setup details <span aria-hidden="true">↗</span>
                   </a>
                 </article>
               </div>
               <p className="or-setup-note">
-                Instagram’s account requirements, permissions, messaging
-                windows, and rate limits apply with either provider. Existing
-                accounts are never automatically migrated.
+                Instagram account requirements, permissions, messaging windows,
+                and rate limits apply.
               </p>
             </section>
             <section className="or-section or-faq">
@@ -388,58 +327,34 @@ export default async function Home() {
               </div>
               <div>
                 <details>
-                  <summary>Is OpenReply free?</summary>
+                  <summary>What does TakeChat do?</summary>
                   <p>
-                    Yes. OpenReply is MIT-licensed software with no software
-                    subscription or seat limits. You pay for your own
-                    infrastructure and any optional services you choose,
-                    including Zernio.
-                  </p>
-                </details>
-                <details>
-                  <summary>Can I use the public demo to send DMs?</summary>
-                  <p>
-                    No. Deploy your own instance first. The public demo shows
-                    the interface; it is not a hosted automation service. The{" "}
-                    <a href={SETUP_DOCS_URL}>setup guide</a> walks through both
-                    processes, the databases, and your provider choice.
-                  </p>
-                </details>
-                <details>
-                  <summary>Do I need Zernio?</summary>
-                  <p>
-                    No. Zernio is an optional paid connection provider and
-                    sponsor. It can spare you setting up your own Meta app,
-                    while OpenReply still runs on your infrastructure. The
-                    direct Meta path stays available.{" "}
-                    <a
-                      href={zernioLink({ placement: "landing-faq" })}
-                      rel="sponsored noopener noreferrer"
-                      target="_blank"
-                    >
-                      Learn about Zernio
-                    </a>
-                    .
+                    TakeChat matches comments on selected Instagram posts to
+                    campaign keywords and sends the configured private reply.
+                    You can also enable a public comment reply.
                   </p>
                 </details>
                 <details>
                   <summary>Which Instagram accounts can I connect?</summary>
                   <p>
                     Instagram Business and Creator accounts. Personal accounts
-                    are not supported. Connections use the official API, and
-                    Instagram’s platform policies still apply.
+                    are not supported. Connections use Meta’s official API.
                   </p>
                 </details>
                 <details>
-                  <summary>Are there differences between providers?</summary>
+                  <summary>Can I use it before Meta App Review?</summary>
                   <p>
-                    Yes. With Zernio, the post picker shows the latest 25 posts.
-                    Reporting needs its analytics add-on and synced data, and
-                    follower snapshots can be up to 24 hours old. Inbox previews
-                    are omitted when message direction is unavailable; opening
-                    threads and replying are supported. Read the{" "}
-                    <a href={ZERNIO_DOCS_URL}>provider guide</a> before
-                    choosing.
+                    The app is in development mode for internal use. Only
+                    accounts added as testers can connect until Meta grants the
+                    access required for a public launch.
+                  </p>
+                </details>
+                <details>
+                  <summary>What does hosting cost?</summary>
+                  <p>
+                    TakeChat uses Cloudflare Workers, Cloudflare Queues, and a
+                    Supabase Postgres schema. Actual charges depend on account
+                    plans and usage.
                   </p>
                 </details>
               </div>
@@ -453,7 +368,7 @@ export default async function Home() {
           <p>Clone it, connect Instagram, and write your first reply.</p>
           <div className="or-actions">
             <a className="or-button or-button-primary" href={SETUP_DOCS_URL}>
-              Set up OpenReply <span aria-hidden="true">↗</span>
+              Set up TakeChat <span aria-hidden="true">↗</span>
             </a>
             <a className="or-text-link" href={GITHUB_URL}>
               Star on GitHub <span aria-hidden="true">↗</span>
@@ -466,9 +381,9 @@ export default async function Home() {
           <div className="or-footer-top">
             <div>
               <Link href="/" className="or-wordmark">
-                OpenReply<span aria-hidden="true">↗</span>
+                TakeChat<span aria-hidden="true">↗</span>
               </Link>
-              <p>Open source Instagram comment-to-DM automation.</p>
+              <p>Automatic replies to Instagram post comments.</p>
             </div>
             <nav aria-label="Footer navigation">
               <a href={GITHUB_URL}>GitHub</a>
@@ -479,11 +394,7 @@ export default async function Home() {
             </nav>
           </div>
           <div className="or-footer-bottom">
-            <span>
-              MIT licensed · Built by{" "}
-              <a href="https://diwenhuang.ca">Diwen Huang</a>
-            </span>
-            <SponsorCredit placement="landing-footer" />
+            <span>TakeChat · marceloholcomercial@gmail.com</span>
           </div>
         </div>
       </footer>
