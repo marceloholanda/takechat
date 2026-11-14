@@ -11,7 +11,7 @@ The app is currently for internal use. Only `marceloholcomercial@gmail.com` is a
 - Cloudflare Worker: `takechat`
 - Cloudflare Queue: `takechat-dm-queue-production`
 - Dead-letter Queue: `takechat-dm-dlq-production`
-- Supabase project: `takemode-main`, Canada Central (`ca-central-1`)
+- Supabase project: `takechat` (`ibtnanxzzgniujnpscbn`), Canada Central (`ca-central-1`)
 - Supabase schema: `takechat`
 - Meta app: `TakeChat`, app ID `2162666984639710`
 
