@@ -78,18 +78,6 @@
   font-size: 14px;
   color: var(--or-muted);
 }
-.or-stars {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  color: var(--or-ink);
-}
-.or-stars svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-}
 .or-nav-cta {
   display: flex;
   align-items: center;
@@ -518,53 +506,9 @@
   line-height: 1.7;
   margin-top: 8px !important;
 }
-.or-technical {
-  background: var(--or-ink);
-  color: white;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  padding: 48px 40px;
-}
-.or-technical .or-eyebrow {
-  color: #e7b591;
-}
-.or-technical p:not(.or-eyebrow) {
-  margin-top: 20px;
-  color: #bdbdb5;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.or-technical .or-text-link {
-  margin-top: 24px;
-}
-.or-runtime {
-  display: grid;
-  gap: 20px;
-  align-content: center;
-}
-.or-runtime > div {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  border-bottom: 1px solid #4a4a43;
-  padding-bottom: 20px;
-  gap: 6px 20px;
-}
-.or-runtime .or-mono {
-  color: #bdbdb5;
-  grid-row: span 2;
-}
-.or-runtime strong {
-  font-size: 16px;
-  font-weight: 500;
-}
-.or-runtime div > span:last-child {
-  font-size: 12px;
-  color: #bdbdb5;
-}
 .or-provider-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 32px;
   margin-top: 32px;
 }
@@ -692,8 +636,7 @@
   .or-nav nav {
     gap: 16px;
   }
-  .or-how,
-  .or-technical {
+  .or-how {
     gap: 32px;
   }
   .or-hero h1 {
@@ -720,10 +663,7 @@
   .or-nav-cta {
     gap: 8px;
   }
-  .or-nav nav a:not(.or-stars) {
-    display: none;
-  }
-  .or-nav nav .or-stars {
+  .or-nav nav a {
     display: none;
   }
   .or-wordmark {
@@ -768,7 +708,6 @@
   }
   .or-how,
   .or-feature-grid,
-  .or-technical,
   .or-provider-grid,
   .or-faq {
     grid-template-columns: 1fr;
@@ -782,12 +721,6 @@
   }
   .or-feature-grid {
     margin-top: 24px;
-  }
-  .or-technical {
-    padding: 32px 24px;
-  }
-  .or-runtime {
-    margin-top: 0;
   }
   .or-closing {
     padding-block: 56px;

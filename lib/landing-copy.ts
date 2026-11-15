@@ -15,7 +15,6 @@ export type LandingCopy = {
     how: string;
     setup: string;
     contact: string;
-    githubAria: string;
     signIn: string;
     getStarted: string;
   };
@@ -56,16 +55,6 @@ export type LandingCopy = {
     title: string;
     cards: LandingCard[];
   };
-  technical: {
-    title: [string, string];
-    description: string;
-    sourceLink: string;
-    runtime: Array<{
-      label: string;
-      title: string;
-      description: string;
-    }>;
-  };
   setup: {
     title: string;
     description: string;
@@ -83,7 +72,7 @@ export type LandingCopy = {
     title: string;
     description: string;
     setup: string;
-    star: string;
+    contact: string;
   };
   footer: {
     description: string;
@@ -99,25 +88,24 @@ export const landingCopy = {
   en: {
     metadataTitle: "TakeChat — Instagram comment replies",
     metadataDescription:
-      "Configure automatic replies to Instagram post comments with Meta’s official API.",
+      "Turn Instagram comments into conversations with keyword-triggered DMs, personalized replies, and trackable links.",
     skipContent: "Skip to content",
     nav: {
       homeAria: "TakeChat home",
       mainAria: "Main navigation",
       how: "How it works",
-      setup: "Self-host it",
+      setup: "Features",
       contact: "Contact",
-      githubAria: "View TakeChat on GitHub",
       signIn: "Sign in",
       getStarted: "Get started",
     },
     hero: {
-      title: ["Turn Instagram comments", "into private replies."],
+      title: ["Turn Instagram comments", "into conversations."],
       description:
-        "When someone comments a keyword on your post or reel, TakeChat automatically sends them a DM. Free, open source, and self-hosted.",
-      setup: "Set up TakeChat",
+        "Create keyword-based campaigns for your posts and reels. TakeChat automatically sends a personalized DM with the link, guide, or offer your audience asked for.",
+      setup: "Start using TakeChat",
       how: "See how it works",
-      note: "Free software. Self-hosted. Your infrastructure.",
+      note: "Automate replies, share links, and follow every campaign.",
     },
     preview: {
       ariaLabel:
@@ -137,24 +125,24 @@ export const landingCopy = {
       sender: "Sunday studio → Maya",
       message: "Hey Maya! Here’s the link 👇",
       link: "Shop the new drop",
-      delivered: "Sent through the official Instagram API",
+      delivered: "Reply sent automatically",
       caption: "Example content. Your keywords, your message, your links.",
     },
     principles: [
-      "MIT licensed",
-      "Official Instagram API",
+      "Automatic private replies",
+      "Personalized campaigns",
+      "Trackable links",
       "No password sharing",
-      "Your campaigns, in your database",
     ],
     how: {
       title: "How it works",
       description:
-        "Send a product link, share a resource, or deliver your latest guide. You decide what starts the conversation and what happens next.",
+        "Share a product link, deliver a guide, or answer a common question. Choose what triggers each campaign and customize the reply your audience receives.",
       steps: [
         {
           title: "Connect your account",
           description:
-            "Sign in through the TakeChat Meta app and connect an Instagram Business or Creator account.",
+            "Connect an Instagram Business or Creator account to get started.",
         },
         {
           title: "Set up a campaign",
@@ -164,68 +152,45 @@ export const landingCopy = {
         {
           title: "TakeChat handles the rest",
           description:
-            "Incoming events trigger your campaigns. A Cloudflare Worker queues, rate-limits, and logs each send, with retries and comment reconciliation.",
+            "When someone comments with a campaign keyword, TakeChat sends your reply automatically. Follow message delivery and link clicks from the campaign.",
         },
       ],
     },
     features: {
-      title: "Features",
+      title: "Automate replies and keep every campaign on track.",
       cards: [
         {
-          title: "Custom reply messages",
+          title: "Personalized DMs and links",
           description:
             "Write your own messages, personalize them with a username, and use up to two tracked link buttons.",
         },
         {
-          title: "Multiple triggers",
+          title: "Comments, DMs, and Stories",
           description:
             "Start campaigns from post comments, incoming DMs, and text replies to Stories.",
         },
         {
-          title: "Inbox",
+          title: "Inbox in one place",
           description:
             "Read conversations and reply from TakeChat within Instagram’s messaging window.",
         },
         {
-          title: "Delivery logs",
+          title: "Campaign tracking",
           description:
             "See sent, skipped, and failed messages with reasons. Track link clicks back to a campaign.",
         },
       ],
     },
-    technical: {
-      title: ["Open code.", "A system you can inspect."],
-      description:
-        "TakeChat manages campaigns, keyword matching, Cloudflare Queues, retries, logs, and the inbox. Instagram connections and replies use Meta’s official API.",
-      sourceLink: "Explore the source",
-      runtime: [
-        {
-          label: "Web app",
-          title: "Next.js + React",
-          description: "Dashboard and incoming events",
-        },
-        {
-          label: "Background worker",
-          title: "Cloudflare Workers + Queues",
-          description: "Queued delivery and reconciliation",
-        },
-        {
-          label: "Your data",
-          title: "Supabase Postgres + Cloudflare Queues",
-          description: "Campaigns, accounts, logs, and queue",
-        },
-      ],
-    },
     setup: {
-      title: "TakeChat runs on Cloudflare and Supabase.",
+      title: "The right reply starts with a keyword.",
       description:
-        "Connect your Instagram professional account through the separate TakeChat Meta app. Cloudflare Workers runs the app and queue; Supabase stores campaigns, accounts, and logs.",
-      connectTitle: "Connect through Meta",
-      apiLabel: "Official Instagram API",
+        "Choose a post or reel, define the keyword, and prepare the DM. When someone comments, TakeChat sends it automatically.",
+      connectTitle: "From campaign setup to follow-up",
+      apiLabel: "Comment → private reply",
       accountDescription:
-        "Sign in with an Instagram account added as a tester to the TakeChat app, then choose the professional profile whose comments TakeChat should handle.",
-      detailsLink: "Deployment and setup details",
-      note: "Instagram account requirements, permissions, messaging windows, and rate limits apply.",
+        "Personalize the message, add up to two tracked link buttons, and optionally publish a public reply. Then follow message delivery and link clicks by campaign.",
+      detailsLink: "Start using TakeChat",
+      note: "You choose which posts, keywords, and replies belong to each campaign.",
     },
     faq: {
       title: "FAQ",
@@ -238,30 +203,31 @@ export const landingCopy = {
         {
           title: "Which Instagram accounts can I connect?",
           description:
-            "Instagram Business and Creator accounts. Personal accounts are not supported. Connections use Meta’s official API.",
+            "Instagram Business and Creator accounts. Personal accounts are not supported.",
         },
         {
-          title: "Can I use it before Meta App Review?",
+          title: "Can I customize the reply?",
           description:
-            "The app is in development mode for internal use. Only accounts added as testers can connect until Meta grants the access required for a public launch.",
+            "Yes. Write a private message, personalize it with the commenter’s username, add up to two tracked link buttons, and optionally enable a public comment reply.",
         },
         {
-          title: "What does hosting cost?",
+          title: "How can I follow campaign results?",
           description:
-            "TakeChat uses Cloudflare Workers, Cloudflare Queues, and a Supabase Postgres schema. Actual charges depend on your account plans and usage.",
+            "See which messages were sent, skipped, or failed and why. TakeChat also attributes tracked link clicks to the campaign.",
         },
       ],
     },
     closing: {
-      title: "Set up your first campaign",
-      description: "Clone it, connect Instagram, and write your first reply.",
-      setup: "Set up TakeChat",
-      star: "Star on GitHub",
+      title: "Spend less time repeating replies.",
+      description:
+        "Create a campaign, choose its keywords, and let TakeChat send the right reply automatically.",
+      setup: "Start using TakeChat",
+      contact: "Talk to our team",
     },
     footer: {
       description: "Automatic replies to Instagram post comments.",
       navAria: "Footer navigation",
-      setup: "Setup guide",
+      setup: "Access TakeChat",
       privacy: "Privacy",
       terms: "Terms",
       dataDeletion: "Data deletion",
@@ -270,25 +236,24 @@ export const landingCopy = {
   "pt-BR": {
     metadataTitle: "TakeChat — respostas a comentários no Instagram",
     metadataDescription:
-      "Configure respostas automáticas aos comentários nas publicações do Instagram usando a API oficial da Meta.",
+      "Transforme comentários do Instagram em conversas com DMs por palavra-chave, mensagens personalizadas e links rastreáveis.",
     skipContent: "Pular para o conteúdo",
     nav: {
       homeAria: "Página inicial do TakeChat",
       mainAria: "Navegação principal",
       how: "Como funciona",
-      setup: "Hospede por conta própria",
+      setup: "Recursos",
       contact: "Contato",
-      githubAria: "Ver TakeChat no GitHub",
       signIn: "Entrar",
       getStarted: "Começar",
     },
     hero: {
-      title: ["Transforme comentários", "do Instagram em DMs."],
+      title: ["Transforme comentários", "em conversas no Instagram."],
       description:
-        "Quando alguém comenta uma palavra-chave na sua publicação ou reel, o TakeChat envia uma DM automaticamente. Gratuito, de código aberto e auto-hospedado.",
-      setup: "Configurar o TakeChat",
+        "Crie campanhas por palavra-chave para suas publicações e reels. O TakeChat envia automaticamente uma DM personalizada com o link, material ou oferta que seu público pediu.",
+      setup: "Começar a usar o TakeChat",
       how: "Veja como funciona",
-      note: "Software gratuito. Auto-hospedado. Na sua infraestrutura.",
+      note: "Automatize respostas, compartilhe links e acompanhe cada campanha.",
     },
     preview: {
       ariaLabel:
@@ -308,24 +273,24 @@ export const landingCopy = {
       sender: "Estúdio Sunday → Maya",
       message: "Oi, Maya! Aqui está o link 👇",
       link: "Ver a nova coleção",
-      delivered: "Enviado pela API oficial do Instagram",
+      delivered: "Resposta enviada automaticamente",
       caption: "Exemplo. Suas palavras-chave, mensagens e links.",
     },
     principles: [
-      "Licença MIT",
-      "API oficial do Instagram",
+      "Respostas privadas automáticas",
+      "Campanhas personalizadas",
+      "Links rastreáveis",
       "Sem compartilhar senhas",
-      "Suas campanhas no seu banco de dados",
     ],
     how: {
       title: "Como funciona",
       description:
-        "Envie um link de produto, compartilhe um recurso ou entregue seu guia mais recente. Você escolhe o que inicia a conversa e o que acontece depois.",
+        "Compartilhe um link de produto, entregue um guia ou responda a uma dúvida comum. Escolha o que aciona cada campanha e personalize a mensagem que seu público recebe.",
       steps: [
         {
           title: "Conecte sua conta",
           description:
-            "Entre pelo app da Meta do TakeChat e conecte uma conta profissional do Instagram, Business ou Creator.",
+            "Conecte uma conta Business ou Creator do Instagram para começar.",
         },
         {
           title: "Configure uma campanha",
@@ -335,68 +300,45 @@ export const landingCopy = {
         {
           title: "O TakeChat cuida do restante",
           description:
-            "Os eventos recebidos acionam suas campanhas. Um Worker da Cloudflare enfileira, limita a taxa e registra cada envio, com novas tentativas e reconciliação de comentários.",
+            "Quando alguém comenta uma palavra-chave da campanha, o TakeChat envia sua resposta automaticamente. Acompanhe os envios e cliques nos links pela campanha.",
         },
       ],
     },
     features: {
-      title: "Recursos",
+      title: "Automatize respostas e acompanhe cada campanha.",
       cards: [
         {
-          title: "Mensagens personalizadas",
+          title: "DMs e links personalizados",
           description:
             "Escreva suas mensagens, personalize-as com o nome de usuário e use até dois botões com links rastreáveis.",
         },
         {
-          title: "Vários gatilhos",
+          title: "Comentários, DMs e Stories",
           description:
             "Inicie campanhas por comentários em publicações, DMs recebidas e respostas de texto aos Stories.",
         },
         {
-          title: "Caixa de entrada",
+          title: "Caixa de entrada em um só lugar",
           description:
             "Leia conversas e responda pelo TakeChat dentro da janela de mensagens do Instagram.",
         },
         {
-          title: "Registros de envio",
+          title: "Acompanhamento das campanhas",
           description:
             "Veja mensagens enviadas, ignoradas ou com falha e os respectivos motivos. Acompanhe os cliques nos links até a campanha.",
         },
       ],
     },
-    technical: {
-      title: ["Código aberto.", "Um sistema que você pode inspecionar."],
-      description:
-        "O TakeChat gerencia campanhas, correspondência de palavras-chave, Cloudflare Queues, novas tentativas, registros e caixa de entrada. As conexões e respostas do Instagram usam a API oficial da Meta.",
-      sourceLink: "Explore o código",
-      runtime: [
-        {
-          label: "Aplicação web",
-          title: "Next.js + React",
-          description: "Painel e eventos recebidos",
-        },
-        {
-          label: "Worker em segundo plano",
-          title: "Cloudflare Workers + Queues",
-          description: "Envios em fila e reconciliação",
-        },
-        {
-          label: "Seus dados",
-          title: "Supabase Postgres + Cloudflare Queues",
-          description: "Campanhas, contas, registros e fila",
-        },
-      ],
-    },
     setup: {
-      title: "O TakeChat funciona na Cloudflare e no Supabase.",
+      title: "A resposta certa começa com uma palavra-chave.",
       description:
-        "Conecte sua conta profissional do Instagram pelo app da Meta do TakeChat. A Cloudflare Workers executa o app e a fila; o Supabase armazena campanhas, contas e registros.",
-      connectTitle: "Conecte pela Meta",
-      apiLabel: "API oficial do Instagram",
+        "Escolha uma publicação ou reel, defina a palavra-chave e prepare a DM. Quando alguém comentar, o TakeChat envia automaticamente.",
+      connectTitle: "Da campanha ao acompanhamento",
+      apiLabel: "Comentário → resposta privada",
       accountDescription:
-        "Entre com uma conta do Instagram adicionada como testadora no app do TakeChat e escolha o perfil profissional cujos comentários o TakeChat deve gerenciar.",
-      detailsLink: "Detalhes de implantação e configuração",
-      note: "Aplicam-se os requisitos de conta do Instagram, permissões, janelas de mensagens e limites de taxa.",
+        "Personalize a mensagem, inclua até dois botões com links rastreáveis e, se quiser, publique também uma resposta ao comentário. Depois, acompanhe envios e cliques por campanha.",
+      detailsLink: "Começar a usar o TakeChat",
+      note: "Você escolhe quais publicações, palavras-chave e respostas fazem parte de cada campanha.",
     },
     faq: {
       title: "Perguntas frequentes",
@@ -409,30 +351,31 @@ export const landingCopy = {
         {
           title: "Quais contas do Instagram posso conectar?",
           description:
-            "Contas Instagram Business e Creator. Contas pessoais não são aceitas. As conexões usam a API oficial da Meta.",
+            "Contas Instagram Business e Creator. Contas pessoais não são aceitas.",
         },
         {
-          title: "Posso usar antes da análise do app pela Meta?",
+          title: "Posso personalizar a resposta?",
           description:
-            "O app está em modo de desenvolvimento para uso interno. Apenas contas adicionadas como testadoras podem conectar até a Meta conceder o acesso necessário para um lançamento público.",
+            "Sim. Escreva a mensagem privada, personalize com o nome de usuário, adicione até dois botões com links rastreáveis e, se quiser, ative uma resposta pública ao comentário.",
         },
         {
-          title: "Quanto custa a hospedagem?",
+          title: "Como acompanho os resultados da campanha?",
           description:
-            "O TakeChat usa Cloudflare Workers, Cloudflare Queues e um schema Postgres no Supabase. Os custos reais dependem do plano da conta e do uso.",
+            "Veja quais mensagens foram enviadas, ignoradas ou falharam e os motivos. Os cliques nos links rastreáveis também ficam associados à campanha.",
         },
       ],
     },
     closing: {
-      title: "Configure sua primeira campanha",
-      description: "Clone o projeto, conecte o Instagram e escreva sua primeira resposta.",
-      setup: "Configurar o TakeChat",
-      star: "Favoritar no GitHub",
+      title: "Passe menos tempo repetindo respostas.",
+      description:
+        "Crie uma campanha, escolha as palavras-chave e deixe o TakeChat enviar a resposta certa automaticamente.",
+      setup: "Começar a usar o TakeChat",
+      contact: "Fale com a nossa equipe",
     },
     footer: {
       description: "Respostas automáticas a comentários nas publicações do Instagram.",
       navAria: "Navegação do rodapé",
-      setup: "Guia de configuração",
+      setup: "Acessar o TakeChat",
       privacy: "Privacidade",
       terms: "Termos",
       dataDeletion: "Exclusão de dados",
