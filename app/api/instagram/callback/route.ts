@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
-import { getBaseUrl } from "@/lib/env";
+import { getBaseUrl, getMetaGraphApiVersion } from "@/lib/env";
 import { canConnectInstagramAccount } from "@/lib/instagram-accounts";
-import { getLongLivedToken, getUserInfo, subscribeInstagramAccountToWebhooks } from "@/lib/meta/client";
+import { subscribeInstagramAccountToWebhooks, unifiedToken } from "@/lib/meta/client";
 import {
   encryptToken,
   exchangeCodeForToken,
@@ -43,62 +43,52 @@ export async function GET(request: NextRequest) {
 
   try {
     const redirectUri = `${baseUrl}/api/instagram/callback`;
-    const { accessToken: shortLivedToken } = await exchangeCodeForToken(
-      code,
-      redirectUri
-    );
-    const { accessToken: longLivedToken, expiresIn } =
-      await getLongLivedToken(shortLivedToken);
-    const userInfo = await getUserInfo(longLivedToken);
-    // Webhooks and the messaging API key off the professional account ID
-    // (user_id), not the app-scoped `id`. Store user_id so comment webhooks
-    // can be matched back to this account. Fall back to id if user_id is
-    // ever absent.
-    const instagramId = userInfo.user_id ?? userInfo.id;
-    const connection = await canConnectInstagramAccount({
-      workspaceId: state.workspaceId,
-      instagramId,
-    });
-
-    if (!connection.allowed) {
-      return NextResponse.redirect(
-        `${baseUrl}/settings?instagram=already_connected`
-      );
+    const { accessToken } = await exchangeCodeForToken(code, redirectUri);
+    type Page = { data?: Array<{id: string; username: string; name?: string}>; paging?: { cursors?: {after?: string}; next?: string }; error?: {message?: string} };
+    const accounts: NonNullable<Page["data"]> = [];
+    let cursor: string | undefined;
+    const seen = new Set<string>();
+    for (let page = 0; page < 100; page++) {
+      const url = new URL(`https://graph.facebook.com/${getMetaGraphApiVersion()}/me/assigned_instagram_accounts`);
+      url.searchParams.set("fields", "id,username");
+      url.searchParams.set("limit", "100");
+      if (cursor) url.searchParams.set("after", cursor);
+      const response = await fetch(url, {headers: {Authorization: `Bearer ${accessToken}`}});
+      const data = await response.json() as Page;
+      if (!response.ok || data.error) throw new Error(`Meta account lookup failed: ${data.error?.message ?? response.status}`);
+      accounts.push(...(data.data ?? []));
+      if (!data.paging?.next) break;
+      const next = data.paging.cursors?.after;
+      if (!next || seen.has(next)) throw new Error("Meta account pagination did not advance");
+      seen.add(next);
+      cursor = next;
+      if (page === 99) throw new Error("Meta account pagination exceeded limit");
     }
+    if (!accounts.length) throw new Error("Nenhuma conta do Instagram foi compartilhada.");
 
-    const encryptedToken = encryptToken(longLivedToken);
-    const tokenExpiresAt = new Date(Date.now() + expiresIn * 1000);
-
-    let webhookSubscribed = false;
-    try {
-      const subscription = await subscribeInstagramAccountToWebhooks(
-        instagramId,
-        longLivedToken
-      );
-      webhookSubscribed = Boolean(subscription.success);
-    } catch (subscriptionError) {
-      console.warn(
-        "[Instagram Callback] Webhook subscription failed:",
-        subscriptionError
-      );
+    let connected = 0;
+    for (const account of accounts) {
+      if (!account.id || !account.username) continue;
+      const connection = await canConnectInstagramAccount({workspaceId: state.workspaceId, instagramId: account.id});
+      if (!connection.allowed) continue;
+      const credential = unifiedToken(accessToken, account.id);
+      let webhookSubscribed = false;
+      try {
+        webhookSubscribed = Boolean((await subscribeInstagramAccountToWebhooks(account.id, credential)).success);
+      } catch (subscriptionError) {
+        console.warn("[Instagram Callback] Webhook subscription failed", subscriptionError);
+      }
+      const data = {username: account.username, name: account.name ?? null, accessToken: encryptToken(credential), tokenExpiresAt: null, webhookSubscribed};
+      const existing = await prisma.instagramAccount.findUnique({where: {instagramId: account.id}});
+      if (existing) {
+        const result = await prisma.instagramAccount.updateMany({where: {id: existing.id, workspaceId: state.workspaceId, provider: "META"}, data});
+        connected += result.count;
+      } else {
+        await prisma.instagramAccount.create({data: {...data, workspaceId: state.workspaceId, instagramId: account.id, provider: "META"}});
+        connected++;
+      }
     }
-
-    const data = {
-      username: userInfo.username,
-      name: userInfo.name,
-      accessToken: encryptedToken,
-      tokenExpiresAt,
-      webhookSubscribed,
-    };
-    const existing = await prisma.instagramAccount.findUnique({ where: { instagramId } });
-    if (existing) {
-      const updated = await prisma.instagramAccount.updateMany({
-        where: { id: existing.id, workspaceId: state.workspaceId, provider: 'META' }, data,
-      });
-      if (!updated.count) return NextResponse.redirect(`${baseUrl}/settings?instagram=already_connected`);
-    } else {
-      await prisma.instagramAccount.create({ data: { ...data, workspaceId: state.workspaceId, instagramId, provider: 'META' } });
-    }
+    if (!connected) return NextResponse.redirect(`${baseUrl}/settings?instagram=already_connected`);
 
     return NextResponse.redirect(`${baseUrl}/dashboard?connected=true`);
   } catch (err) {

@@ -7,13 +7,8 @@ import {
 } from "crypto";
 import { getEncryptionKeyHex, requireEnv } from "@/lib/env";
 
-// Instagram API with Instagram Login authorizes on www.instagram.com. The old
-// api.instagram.com/oauth/authorize host belonged to the retired Basic Display
-// API and now 404s ("Sorry, this page isn't available"), which looks like a bad
-// link rather than a wrong endpoint. The token exchange below still lives on
-// api.instagram.com — only the authorize hop moved.
-const INSTAGRAM_OAUTH_URL = "https://www.instagram.com/oauth/authorize";
-const INSTAGRAM_TOKEN_URL = "https://api.instagram.com/oauth/access_token";
+// Unified Login uses Facebook Login for Business with a configured asset set.
+const INSTAGRAM_OAUTH_URL = "https://www.facebook.com/dialog/oauth";
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
@@ -90,46 +85,24 @@ export function verifyOAuthState(state: string | null): OAuthStatePayload | null
 export function getAuthorizationUrl(redirectUri: string, state: string): string {
   const params = new URLSearchParams({
     client_id: requireEnv("INSTAGRAM_APP_ID"),
+    config_id: requireEnv("INSTAGRAM_UNIFIED_CONFIG_ID"),
     redirect_uri: redirectUri,
-    scope:
-      "instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_manage_insights",
     response_type: "code",
+    override_default_response_type: "true",
+    prompt: "login",
     state,
   });
-
-  return `${INSTAGRAM_OAUTH_URL}?${params.toString()}`;
+  return `${INSTAGRAM_OAUTH_URL}?${params}`;
 }
 
-export async function exchangeCodeForToken(
-  code: string,
-  redirectUri: string
-): Promise<{ accessToken: string; userId: string }> {
-  const body = new URLSearchParams({
-    client_id: requireEnv("INSTAGRAM_APP_ID"),
-    client_secret: requireEnv("INSTAGRAM_APP_SECRET"),
-    grant_type: "authorization_code",
-    redirect_uri: redirectUri,
-    code,
-  });
-
-  const response = await fetch(INSTAGRAM_TOKEN_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body.toString(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(
-      `Token exchange failed: ${error.error_message || JSON.stringify(error)}`
-    );
-  }
-
-  const data = await response.json();
-  return {
-    accessToken: data.access_token,
-    userId: String(data.user_id),
-  };
+export async function exchangeCodeForToken(code: string, redirectUri: string): Promise<{ accessToken: string }> {
+  const url = new URL(`https://graph.facebook.com/${process.env.META_GRAPH_API_VERSION ?? "v25.0"}/oauth/access_token`);
+  const params = new URLSearchParams({client_id: requireEnv("INSTAGRAM_APP_ID"), client_secret: requireEnv("FACEBOOK_APP_SECRET"), redirect_uri: redirectUri, code});
+  url.search = params.toString();
+  const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  const data = await response.json() as { access_token?: string; error?: { message?: string } };
+  if (!response.ok || !data.access_token) throw new Error(`Meta token exchange failed: ${data.error?.message ?? response.status}`);
+  return { accessToken: data.access_token };
 }
 
 function getEncryptionKey(): Buffer {

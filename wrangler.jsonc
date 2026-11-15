@@ -23,7 +23,8 @@
     "EMAIL_PROVIDER": "cloudflare",
     "EMAIL_FROM": "TakeChat <login@auth.fiscalizaos.com.br>",
     "INSTAGRAM_APP_ID": "2162666984639710",
-    "META_GRAPH_API_VERSION": "v25.0",
+    "INSTAGRAM_UNIFIED_CONFIG_ID": "2050974895528141",
+    "META_GRAPH_API_VERSION": "v26.0",
     "ALLOWED_EMAILS": "marceloholcomercial@gmail.com"
   },
   "send_email": [
