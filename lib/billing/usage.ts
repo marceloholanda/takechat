@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/client";
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 // Self-hosted build: usage is still counted per month so the dashboard can
 // report volume, but no cap is enforced. Meta's own rate limits apply instead.

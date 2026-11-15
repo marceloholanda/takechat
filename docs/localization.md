@@ -1,18 +1,21 @@
 # Interface languages
 
-OpenReply defaults to English. Choose **English**, **繁體中文**, **Português (Brasil)** or **Русский** in the dashboard
-sidebar, under **Settings → Interface language**, or on the sign-in screen.
-The choice is stored in a browser cookie for one year and applies to the
-dashboard, sign-in screens, workspace invitations, and shared campaign reports.
+The public TakeChat landing page defaults to **Português (Brasil)** and offers
+**English** in its header. The choice is stored in a browser cookie for one
+year and is shared with the dashboard and sign-in screen.
+
+The dashboard, sign-in screens, workspace invitations, and shared campaign
+reports also support **繁體中文** and **Русский** through **Settings → Interface
+language**.
 
 Changing the interface language does not translate campaign names, keywords,
 outgoing messages, button text, imported CSV data, or Instagram content. An
 unsaved campaign stays in the editor when switching languages. Default outgoing
 message content retains its original values in both languages.
 
-Public marketing, template playbooks, legal pages, authentication emails, and
-raw API/provider error details remain in English. Those are outside this
-interface translation's scope.
+The public landing page is available in Portuguese and English. Other marketing
+pages, template playbooks, legal pages, authentication emails, and raw
+API/provider error details remain in English.
 
 ## Adding or changing copy
 
@@ -33,15 +36,18 @@ interface translation's scope.
 ## Rendering and persistence
 
 The locale cookie is validated on the server; missing or unsupported values
-fall back to English. A server action saves it and re-renders the current route
-without remounting the editor. The action sets a same-site, HTTP-only cookie,
-with the secure flag in production. There is no translation dependency, new
-database column, or change to the sending worker.
+fall back to English in the dashboard and sign-in screens. The landing page
+uses Portuguese as its default and English when selected. A server action saves
+the selection and re-renders the current route without remounting the editor.
+The action sets a same-site, HTTP-only cookie, with the secure flag in
+production. There is no translation dependency, new database column, or change
+to the sending worker.
 
-Providers live in the localized route layouts, below the root layout. This
-keeps the public marketing and template pages statically rendered. Localized
-content has a server-rendered `lang` attribute; the provider also updates the
-document language while mounted and restores it when leaving these routes.
+Providers live below the root layout. The landing page reads the locale cookie
+at request time; other marketing and template pages remain statically rendered.
+Localized content has a server-rendered `lang` attribute; the provider also
+updates the document language while mounted and restores it when leaving these
+routes.
 
 ## Validation
 
@@ -55,4 +61,6 @@ labels. For browser verification:
 3. In the campaign editor, change a message and toggle an option without saving.
    Switch languages: both draft values and the selected post should remain.
 4. Switch back to English, including on a narrow viewport using the sidebar.
-5. Visit a public marketing page: it should remain English.
+5. Visit the landing page with no locale cookie: it should display Portuguese.
+   Switch to English, reload, then open the sign-in screen; it should keep the
+   selected language.

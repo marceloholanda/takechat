@@ -1,4 +1,4 @@
-import type { Workspace, WorkspaceRole } from "@/app/generated/prisma/client";
+import type { Workspace, WorkspaceRole } from "@prisma/client";
 import { getCurrentUserId } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { ensureWorkspaceForUser } from "@/lib/workspace";

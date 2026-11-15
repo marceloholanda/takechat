@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { Prisma } from '@/app/generated/prisma/client';
+import { Prisma } from '@prisma/client';
 import { MetaApiError } from '@/lib/meta/client';
 import { canManageWorkspace, getCurrentWorkspaceContext, type WorkspaceContext } from '@/lib/workspace-access';
 

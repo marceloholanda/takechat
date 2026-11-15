@@ -1,6 +1,6 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 
-vi.mock('@/app/generated/prisma/client', () => ({ Prisma: { PrismaClientKnownRequestError: class extends Error {} } }));
+vi.mock('@prisma/client', () => ({ Prisma: { PrismaClientKnownRequestError: class extends Error {} } }));
 vi.mock('@/lib/meta/client', () => ({ MetaApiError: class extends Error {} }));
 vi.mock('@/lib/workspace-access', () => ({
   getCurrentWorkspaceContext: async () => ({ workspaceId: 'ours', role: 'OWNER' }),

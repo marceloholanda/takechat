@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "OpenReply - Open source Instagram comment-to-DM automation",
+  title: "TakeChat - Instagram comment replies",
   description:
-    "A free, self-hosted ManyChat alternative. Send an Instagram DM automatically when someone comments a keyword on your post or reel, using the official Meta API.",
+    "Manage automatic private replies to comments on Instagram posts using Meta's official API.",
   keywords: [
     "instagram automation",
     "comment to DM",
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "OpenReply",
+    title: "TakeChat",
     statusBarStyle: "black-translucent",
   },
   icons: {
@@ -50,7 +49,6 @@ export default function RootLayout({
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {children}
-        <Analytics />
       </body>
     </html>
   );

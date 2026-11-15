@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db/client';
 import { getDMQueue, MESSAGE_JOB_NAME, POSTBACK_JOB_NAME } from '@/lib/queue/client';
 import { parseCommentEvents, parseMessageEvents, parsePostbackEvents, parseReadEvents } from '@/lib/meta/webhook';
-import { Prisma, type InstagramProvider } from '@/app/generated/prisma/client';
+import { Prisma, type InstagramProvider } from '@prisma/client';
 
 const OPENING_DM_READ_FALLBACK_DELAY_MS = 5 * 60 * 1000;
 type InstagramPayload = Parameters<typeof parseCommentEvents>[0];
@@ -82,7 +82,7 @@ export async function processInstagramWebhook({ payload: incoming, provider, wor
           mid: event.mid,
         },
         {
-          // BullMQ forbids ":" in custom job ids, and the payload is
+          // Keep delimiters out of the deterministic queue id; the payload is
           // "reveal:<id>", so build with underscores and strip any colons.
           jobId: `postback_${event.instagramAccountId}_${event.userId}_${(
             event.mid ?? event.payload
@@ -110,7 +110,7 @@ export async function processInstagramWebhook({ payload: incoming, provider, wor
           senderId: event.senderId,
         },
         {
-          // Message ids can contain characters BullMQ rejects in a job id (":"
+          // Message ids can contain characters that are awkward in a job id (":"
           // in particular). base64url encodes into exactly the allowed alphabet
           // and stays injective — substituting invalid characters would let two
           // distinct mids collapse onto one job id, silently dropping a reply.

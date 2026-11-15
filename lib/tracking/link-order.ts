@@ -1,4 +1,4 @@
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 /**
  * The order of a campaign's tracked links, which is the order of its DM

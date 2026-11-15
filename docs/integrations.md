@@ -15,10 +15,10 @@ npm run db:migrate
 npm run db:generate
 ```
 
-The additive migration only creates `ServiceKey`; it does not change campaigns,
-authentication providers or worker behavior. `REDIS_URL` is required for service
-requests. Each key allows 120 requests per fixed 60-second window. Redis failures
-reject requests with 503 instead of disabling the limiter.
+The key records live in the isolated `takechat` schema. Service requests use a
+Postgres-backed fixed-window rate limit, so production does not require Redis.
+Each key allows 120 requests per 60-second window. Database failures reject
+requests with 503 instead of disabling the limiter.
 
 ## MCP clients
 
@@ -75,7 +75,7 @@ workspace isolation, deterministic link ordering and fixed key expiration.
 The DB suites create and remove their own schemas.
 
 For actual HTTP verification, migrate a **disposable local** database, start
-the web app with that `DATABASE_URL`, local `REDIS_URL` and loopback
+the web app with that `DATABASE_URL` and loopback
 `NEXTAUTH_URL`, then run:
 
 ```sh

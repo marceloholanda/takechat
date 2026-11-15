@@ -16,8 +16,8 @@
  * handled comments. Each sweep is capped so it can never flood the comment API
  * (which Instagram rate-limits aggressively, error 368).
  *
- * It runs on an interval in the worker process because Vercel's free crons only
- * fire once a day. Matching and sending reuse the worker's processComment, so
+ * It runs on a Cloudflare scheduled event. Matching and sending reuse the
+ * queue's processComment handler, so
  * rate limiting and logging behave exactly as for webhook-delivered comments.
  *
  * Known limitation, handled not fixed: comments removed by Instagram's Hidden
@@ -313,7 +313,7 @@ export async function adMediaFor(postId: string): Promise<string[]> {
   try {
     const rows = await prisma.$queryRaw<{ mediaId: string | null }[]>`
       SELECT DISTINCT change->'value'->'media'->>'id' AS "mediaId"
-      FROM "WebhookEvent" w,
+      FROM "takechat"."WebhookEvent" w,
            jsonb_array_elements(w.payload::jsonb->'entry') entry,
            jsonb_array_elements(entry->'changes') change
       WHERE change->>'field' = 'comments'
