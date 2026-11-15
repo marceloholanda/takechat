@@ -64,22 +64,23 @@ export default function TopBar({
         <h1 className="truncate text-base font-semibold sm:text-lg">{t(title)}</h1>
       </div>
 
-      {instagramAccountCount > 0 ? (
-        <p className="shrink-0 truncate text-sm text-muted">
-          {instagramAccountCount > 1
-            ? t("{count} accounts", { count: instagramAccountCount })
-            : `@${instagramUsername}`}
-        </p>
-      ) : (
+      <div className="flex shrink-0 items-center gap-3">
+        {instagramAccountCount > 0 && (
+          <p className="hidden max-w-36 truncate text-sm text-muted sm:block">
+            {instagramAccountCount > 1
+              ? t("{count} accounts", { count: instagramAccountCount })
+              : `@${instagramUsername}`}
+          </p>
+        )}
         <a
           href="/api/instagram/connect"
-          className="shrink-0 whitespace-nowrap text-sm font-medium px-3 py-1.5 rounded bg-accent text-white hover:bg-accent-hover"
+          aria-label={t("Connect another Instagram account")}
+          className="shrink-0 whitespace-nowrap rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
         >
-          {/* Full label needs more room than a 360px header has to spare. */}
           <span className="sm:hidden">{t("Connect")}</span>
           <span className="hidden sm:inline">{t("Connect Instagram")}</span>
         </a>
-      )}
+      </div>
     </header>
   );
 }
