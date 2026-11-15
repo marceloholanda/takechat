@@ -50,11 +50,11 @@ Required:
 - `NEXTAUTH_SECRET` — random secret used for sessions and OAuth state signing.
 - `CRON_SECRET` — separate random secret protecting scheduled and queue routes.
 - `ENCRYPTION_KEY` — exactly 64 hexadecimal characters, used to encrypt Instagram tokens.
-- `INSTAGRAM_APP_SECRET` — app secret for Meta app `2162666984639710`.
-- `FACEBOOK_APP_SECRET` — the same Meta app secret, used to verify signed webhook requests.
+- `FACEBOOK_APP_SECRET` — Meta app secret for code exchange and webhook signature verification.
+- `INSTAGRAM_APP_SECRET` — optional legacy Instagram Login signing secret.
 - `WEBHOOK_VERIFY_TOKEN` — random value entered in the Meta webhook configuration.
 
-`NEXTAUTH_URL`, `EMAIL_PROVIDER`, `EMAIL_FROM`, `INSTAGRAM_APP_ID`, `META_GRAPH_API_VERSION`, and `ALLOWED_EMAILS` are set as non-secret Worker variables in `wrangler.jsonc`.
+`NEXTAUTH_URL`, `EMAIL_PROVIDER`, `EMAIL_FROM`, `INSTAGRAM_APP_ID`, `INSTAGRAM_UNIFIED_CONFIG_ID`, `META_GRAPH_API_VERSION`, and `ALLOWED_EMAILS` are set as non-secret Worker variables in `wrangler.jsonc`.
 
 ## 4. Build and deploy
 
@@ -70,7 +70,7 @@ The deployment uses the local Wrangler version and deploys the Worker named `tak
 
 ## 5. Configure the Meta app
 
-In the TakeChat app's Instagram Login settings, add this OAuth redirect URI:
+In the TakeChat app's Unified Login settings, add this OAuth redirect URI:
 
 `https://takechat.marceloholcomercial.workers.dev/api/instagram/callback`
 
