@@ -42,15 +42,18 @@ export default function OverviewPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState("all");
   const [count, setCount] = useState("50");
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
     const params = new URLSearchParams();
     if (selectedAccountId !== "all") {
       params.set("instagramAccountId", selectedAccountId);
     }
     params.set("count", count);
 
-    fetch(`/api/instagram/overview?${params}`)
+    fetch(`/api/instagram/overview?${params}`, { cache: "no-store", signal: controller.signal })
       .then((r) => r.json())
       .then((res) => {
         if (res.success) {
@@ -60,9 +63,10 @@ export default function OverviewPage() {
           setError(res.error ?? "Failed to load overview");
         }
       })
-      .catch(() => setError("Failed to load overview"))
-      .finally(() => setLoading(false));
-  }, [selectedAccountId, count]);
+      .catch(() => { if (!controller.signal.aborted) setError("Failed to load overview"); })
+      .finally(() => { if (!controller.signal.aborted) { setLoading(false); setRefreshing(false); } });
+    return () => controller.abort();
+  }, [selectedAccountId, count, refreshVersion]);
 
   function handleAccountChange(accountId: string) {
     setLoading(true);
@@ -72,6 +76,12 @@ export default function OverviewPage() {
   function handleCountChange(next: string) {
     setLoading(true);
     setCount(next);
+  }
+
+  function refresh() {
+    setError(null);
+    setRefreshing(true);
+    setRefreshVersion(version => version + 1);
   }
 
   if (loading) {
@@ -91,6 +101,7 @@ export default function OverviewPage() {
     return (
       <div className="panel rounded p-8 text-center">
         <p className="text-sm text-error">{error === "Failed to load overview" ? t("Failed to load overview") : error}</p>
+        <button type="button" onClick={refresh} disabled={refreshing} className="mr-4 text-sm text-accent hover:underline disabled:opacity-50">{t("Refresh")}</button>
         {error.includes("connect") && (
           <a
             href="/api/instagram/connect"
@@ -128,6 +139,7 @@ export default function OverviewPage() {
           )}
         </div>
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+          <button type="button" onClick={refresh} disabled={refreshing} aria-busy={refreshing} className="rounded border border-border px-3 py-2 text-sm font-medium hover:bg-surface-hover disabled:opacity-50">{refreshing ? t("Refreshing...") : t("Refresh")}</button>
           <label className="flex flex-col gap-2 text-sm">
             <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
               {t("Range")}
