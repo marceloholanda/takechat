@@ -46,21 +46,32 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedAccountId, setSelectedAccountId] = useState("all");
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
     const params = new URLSearchParams();
     if (selectedAccountId !== "all") {
       params.set("instagramAccountId", selectedAccountId);
     }
 
-    fetch(`/api/dashboard/stats${params.size ? `?${params}` : ""}`)
+    fetch(`/api/dashboard/stats${params.size ? `?${params}` : ""}`, { cache: "no-store", signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
-        if (data.success) setStats(data.data);
+        if (data.success) { setStats(data.data); setError(false); }
+        else setError(true);
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [selectedAccountId]);
+      .catch(() => { if (!controller.signal.aborted) setError(true); })
+      .finally(() => { if (!controller.signal.aborted) { setLoading(false); setRefreshing(false); } });
+    return () => controller.abort();
+  }, [selectedAccountId, refreshVersion]);
+
+  function refresh() {
+    setRefreshing(true);
+    setRefreshVersion(version => version + 1);
+  }
 
   function handleAccountChange(accountId: string) {
     setLoading(true);
@@ -81,6 +92,10 @@ export default function DashboardPage() {
         </div>
       </div>
     );
+  }
+
+  if (error && !stats) {
+    return <div className="panel rounded p-8"><p>{t("Failed to load dashboard")}</p><button type="button" onClick={refresh} disabled={refreshing} className="mt-3 text-accent hover:underline">{refreshing ? t("Refreshing...") : t("Refresh")}</button></div>;
   }
 
   const maxDM = Math.max(...(stats?.dailyDMs.map((d) => d.count) ?? [1]), 1);
@@ -105,6 +120,8 @@ export default function DashboardPage() {
             </a>
           </p>
         </div>
+        <div className="flex flex-wrap items-end gap-3">
+        <button type="button" onClick={refresh} disabled={refreshing} aria-busy={refreshing} className="rounded border border-border px-3 py-2 text-sm font-medium hover:bg-surface-hover disabled:opacity-50">{refreshing ? t("Refreshing...") : t("Refresh")}</button>
         {stats && stats.instagramAccounts.length > 1 && (
           <AccountSelect
             accounts={stats.instagramAccounts}
@@ -112,7 +129,9 @@ export default function DashboardPage() {
             onChange={handleAccountChange}
           />
         )}
+        </div>
       </div>
+      {error && <p role="alert" className="text-sm text-error">{t("Failed to load dashboard")}</p>}
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">

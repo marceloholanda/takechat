@@ -1,4 +1,6 @@
 {
+  "Refreshing...": "正在更新...",
+  "Failed to load dashboard": "無法載入儀表板",
   "Some accounts could not be loaded; totals are incomplete.": "部分帳號無法載入，總計資料不完整。",
   " (capped at {count})": "（最多顯示 {count} 則）",
   "% CTR": "% 點擊率",
