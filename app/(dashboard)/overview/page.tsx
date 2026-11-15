@@ -116,8 +116,7 @@ export default function OverviewPage() {
           <h1 className="text-lg font-semibold text-foreground">{t("Overview")}</h1>
           <p className="text-sm text-muted mt-1">
             {data.provider !== "ZERNIO" && data.requestedCount === "all" ? t("All-time") : t("Recent")} —{" "}
-            {t(totals.posts === 1 ? "{count} post" : "{count} posts", { count: totals.posts })} {t("from @")}
-            {data.account.username}
+            {t(totals.posts === 1 ? "{count} post" : "{count} posts", { count: totals.posts })} {data.account ? <>{t("from @")}{data.account.username}</> : `· ${t("All accounts")}`}
             {data.truncated ? t(" (capped at {count})", { count: totals.posts }) : ""}
           </p>
           {followers !== null && (
@@ -159,6 +158,11 @@ export default function OverviewPage() {
         </div>
       </div>
 
+      {data.unavailableAccounts.length > 0 && (
+        <p className="rounded border border-border p-4 text-sm text-muted">
+          {t("Some accounts could not be loaded; totals are incomplete.")} {data.unavailableAccounts.map(name => `@${name}`).join(", ")}
+        </p>
+      )}
       {!insightsAvailable && (
         <div className="panel rounded p-4 border border-border">
           <p className="text-sm text-foreground">
@@ -218,6 +222,7 @@ export default function OverviewPage() {
                     className="border-b border-border last:border-0"
                   >
                     <td className="py-3 pr-4 max-w-xs">
+                      {!data.account && <span className="block text-xs text-muted">@{p.username}</span>}
                       {p.permalink ? (
                         <a
                           href={p.permalink}
