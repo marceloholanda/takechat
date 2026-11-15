@@ -20,10 +20,23 @@
   },
   "vars": {
     "NEXTAUTH_URL": "https://takechat.marceloholcomercial.workers.dev",
+    "EMAIL_PROVIDER": "cloudflare",
+    "EMAIL_FROM": "TakeChat <login@auth.fiscalizaos.com.br>",
     "INSTAGRAM_APP_ID": "2162666984639710",
     "META_GRAPH_API_VERSION": "v25.0",
     "ALLOWED_EMAILS": "marceloholcomercial@gmail.com"
   },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": [
+        "login@auth.fiscalizaos.com.br"
+      ],
+      "allowed_destination_addresses": [
+        "marceloholcomercial@gmail.com"
+      ]
+    }
+  ],
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
