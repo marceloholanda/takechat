@@ -53,10 +53,8 @@ Required:
 - `INSTAGRAM_APP_SECRET` — app secret for Meta app `2162666984639710`.
 - `FACEBOOK_APP_SECRET` — the same Meta app secret, used to verify signed webhook requests.
 - `WEBHOOK_VERIFY_TOKEN` — random value entered in the Meta webhook configuration.
-- `EMAIL_SERVER` or `RESEND_API_KEY` — required to deliver login links.
-- `EMAIL_FROM` — a sender address accepted by the selected mail provider.
 
-`NEXTAUTH_URL`, `INSTAGRAM_APP_ID`, `META_GRAPH_API_VERSION`, and `ALLOWED_EMAILS` are already set as non-secret Worker variables in `wrangler.jsonc`.
+`NEXTAUTH_URL`, `EMAIL_PROVIDER`, `EMAIL_FROM`, `INSTAGRAM_APP_ID`, `META_GRAPH_API_VERSION`, and `ALLOWED_EMAILS` are set as non-secret Worker variables in `wrangler.jsonc`.
 
 ## 4. Build and deploy
 
@@ -86,7 +84,11 @@ Add the Instagram accounts as app testers and accept the invitations. Connect pr
 
 ## Login mail
 
-The login page sends email magic links. Configure either a verified Resend sender, or an SMTP URL for an email account you control. Keep the mail-provider credential in a Worker secret. The placeholder sender in `.env.example` will not deliver mail.
+The TakeChat Worker sends magic links through Cloudflare Email Service using its native `EMAIL` binding. The sender is `login@auth.fiscalizaos.com.br`; the domain `auth.fiscalizaos.com.br` must show DNS as configured in Cloudflare Email Sending.
+
+The binding is restricted to that sender and `marceloholcomercial@gmail.com`, matching the current private sign-in allowlist. On Workers Free, verify the recipient address in the Cloudflare account to send to it without charge. Sending to arbitrary recipients requires Workers Paid. No Resend API key is required for this Worker.
+
+For a self-hosted deployment, set `EMAIL_PROVIDER=resend` with a Resend API key, or set `EMAIL_SERVER` and `EMAIL_PROVIDER=smtp` to use SMTP. The `.env.example` file shows these options.
 
 ## Health check
 
