@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db/client';
+import { postbackQueueId } from '@/lib/queue/postback-id';
 import { getDMQueue, MESSAGE_JOB_NAME, POSTBACK_JOB_NAME } from '@/lib/queue/client';
 import { parseCommentEvents, parseMessageEvents, parsePostbackEvents, parseReadEvents } from '@/lib/meta/webhook';
 import { Prisma, type InstagramProvider } from '@prisma/client';
@@ -82,11 +83,9 @@ export async function processInstagramWebhook({ payload: incoming, provider, wor
           mid: event.mid,
         },
         {
-          // Keep delimiters out of the deterministic queue id; the payload is
-          // "reveal:<id>", so build with underscores and strip any colons.
-          jobId: `postback_${event.instagramAccountId}_${event.userId}_${(
-            event.mid ?? event.payload
-          ).replace(/:/g, "_")}`,
+          // Meta message IDs can be longer than the internal queue limit.
+          // Hash the whole event identity to keep deduplication stable and bounded.
+          jobId: postbackQueueId(event.instagramAccountId, event.userId, event.mid ?? event.payload),
         }
       );
     }
