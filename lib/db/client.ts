@@ -14,37 +14,53 @@ interface TakeChatBindings {
   HYPERDRIVE?: HyperdriveBinding;
 }
 
-function getDatabaseConnectionString(): { connectionString: string; worker: boolean } {
-  const localConnectionString = process.env.DATABASE_URL;
-  if (localConnectionString) {
-    return { connectionString: localConnectionString, worker: false };
-  }
+// OpenNext supplies a distinct async-local context for each invocation.
+// A client (and its pg pool) must never cross Worker request boundaries.
+const requestClients = new WeakMap<object, PrismaClient>();
 
-  const { env } = getCloudflareContext();
-  const hyperdrive = (env as unknown as TakeChatBindings).HYPERDRIVE;
-  if (!hyperdrive?.connectionString) {
-    throw new Error("Set DATABASE_URL locally or bind Supabase through HYPERDRIVE");
-  }
-  return { connectionString: hyperdrive.connectionString, worker: true };
+function createClient(connectionString: string, worker: boolean): PrismaClient {
+  return new PrismaClient({
+    adapter: new PrismaPg({
+      connectionString,
+      max: worker ? 1 : Number(process.env.DB_POOL_MAX ?? 3),
+      ...(worker ? { maxUses: 1 } : {}),
+      idleTimeoutMillis: 10_000,
+    }, { schema: "takechat" }),
+  });
 }
 
-/**
- * A single Prisma client uses Hyperdrive's connection pool. maxUses=1 prevents
- * a database socket from being reused between Worker requests.
- */
 export function getPrisma(): PrismaClient {
-  if (!globalForPrisma.prisma) {
-    const { connectionString, worker } = getDatabaseConnectionString();
-    globalForPrisma.prisma = new PrismaClient({
-      adapter: new PrismaPg({
-        connectionString,
-        max: worker ? 1 : Number(process.env.DB_POOL_MAX ?? 3),
-        ...(worker ? { maxUses: 1 } : {}),
-        idleTimeoutMillis: 10_000,
-      }, { schema: "takechat" }),
-    });
+  let context: ReturnType<typeof getCloudflareContext> | undefined;
+  try {
+    context = getCloudflareContext();
+  } catch {
+    // A local Node process may not have a Cloudflare request context.
   }
-  return globalForPrisma.prisma;
+
+  const hyperdrive = (context?.env as unknown as TakeChatBindings | undefined)?.HYPERDRIVE;
+  if (context && hyperdrive?.connectionString) {
+    let client = requestClients.get(context);
+    if (!client) {
+      client = createClient(hyperdrive.connectionString, true);
+      requestClients.set(context, client);
+    }
+    return client;
+  }
+
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("Set DATABASE_URL locally or bind Supabase through HYPERDRIVE");
+  }
+  // Production Worker requests using DATABASE_URL still require request isolation.
+  if (context) {
+    let client = requestClients.get(context);
+    if (!client) {
+      client = createClient(connectionString, true);
+      requestClients.set(context, client);
+    }
+    return client;
+  }
+  return globalForPrisma.prisma ??= createClient(connectionString, false);
 }
 
 /**
