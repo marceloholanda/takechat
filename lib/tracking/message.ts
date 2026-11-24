@@ -58,6 +58,7 @@ export function buildTrackedUrl(
 ) {
   const resolvedBaseUrl =
     baseUrl ??
+    (process.env.TRACKING_BASE_URL?.trim() || undefined) ??
     (typeof window !== "undefined"
       ? window.location.origin
       : process.env.NEXTAUTH_URL ?? "http://localhost:3000");
