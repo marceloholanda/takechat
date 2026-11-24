@@ -19,6 +19,7 @@
     }
   },
   "vars": {
+    "TRACKING_BASE_URL": "https://links.cadernopratico.com",
     "NEXTAUTH_URL": "https://takechat.marceloholcomercial.workers.dev",
     "EMAIL_PROVIDER": "cloudflare",
     "EMAIL_FROM": "TakeChat <login@auth.fiscalizaos.com.br>",

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   calculateCtr,
   countUniqueClicks,
@@ -73,6 +73,18 @@ describe("tracked link messages", () => {
         baseUrl: "https://manychat-alternative.com",
       })
     ).toBe("Link: https://manychat-alternative.com/r/abc123");
+  });
+
+  it("uses a dedicated tracking origin and keeps the recipient token", () => {
+    vi.stubEnv("NEXTAUTH_URL", "https://app.example.com");
+    vi.stubEnv("TRACKING_BASE_URL", "https://links.example.net/");
+    try {
+      expect(buildTrackedUrl("abc123", undefined, "tok")).toBe(
+        "https://links.example.net/r/abc123?r=tok"
+      );
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 
   it("builds redirect URLs from a base URL", () => {
